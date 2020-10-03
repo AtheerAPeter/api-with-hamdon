@@ -1,8 +1,21 @@
 const validate = require("validate.js");
 //the schema in a different file to add different schemas
 const validator = require("./tools/validator.tools");
-const { resError, resData } = require("./tools/helpers.tools");
+const { resError, resData, hashMe } = require("./tools/helpers.tools");
+//using jwt
+//encoding a toekn with a secret
+var jwt = require("jsonwebtoken");
+const { async } = require("validate.js");
 
+// //decoding toekn with the key
+// try {
+//   var decoded = jwt.verify(token, "shhhhh");
+//   console.log(decoded);
+// } catch (e) {
+//   if (e) console.log("error");
+// }
+// ////
+// return;
 let data = [
   {
     id: 1,
@@ -84,4 +97,41 @@ module.exports.editOne = (req, res) => {
   Object.keys(body).forEach((item) => (article[item] = body[item]));
   //return
   return resData(res, article);
+};
+
+const user = {
+  id: 1,
+  email: "me@me.com",
+  password: "admin",
+};
+module.exports.login = (req, res) => {
+  //validate the request
+  const isInvalid = validate(req.body, validator.login());
+  //we return an object with status so the front end job can be easier
+  if (isInvalid) return resError(res, isInvalid);
+  //check the email and the password
+
+  if (req.body.email != user.email || req.body.password != user.password)
+    return resError(res, "User is invalid");
+
+  //if valid send token
+  var token = jwt.sign({ id: user.id }, "shhhhh");
+  return resData(res, token);
+  //if not send him error
+};
+
+module.exports.signin = async (req, res) => {
+  //get data
+  //validate data
+  const isInvalid = validate(req.body, validator.signin());
+  //we return an object with status so the front end job can be easier
+  if (isInvalid) return resError(res, isInvalid);
+
+  //check if email exist in db
+  //checked
+  //hash the password using a helper
+
+  const hash = await hashMe(req.body.password);
+  return resData(res, hash);
+  //save to database
 };

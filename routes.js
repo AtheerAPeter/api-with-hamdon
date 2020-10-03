@@ -1,5 +1,5 @@
 const express = require("express");
-const { defaultMiddleware } = require("./middleware");
+const { defaultMiddleware, auth } = require("./middleware");
 
 //using router from express to get the routes in a seperate file then export them to the main one (app.js)
 const router = express.Router();
@@ -9,6 +9,8 @@ const {
   singleRequest,
   singleAdd,
   editOne,
+  login,
+  signin,
 } = require("./controllers");
 
 //route handler
@@ -18,9 +20,15 @@ router.get("/articles", getArticles);
 router.get("/article/:id", singleRequest);
 
 // add
-router.post("/articles", defaultMiddleware, singleAdd);
+router.post("/articles", auth, singleAdd);
 
 //edit one
-router.put("/articles", defaultMiddleware, editOne);
+router.put("/articles", auth, editOne);
+
+//login
+router.post("/login", login);
+
+//sign in
+router.post("/signin", signin);
 
 module.exports = router;

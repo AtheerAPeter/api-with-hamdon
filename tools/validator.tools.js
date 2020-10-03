@@ -16,4 +16,38 @@ validator.addArticle = (add = true) => ({
   },
 });
 
+validator.login = (add = true) => ({
+  email: {
+    presence: add,
+
+    email: true,
+  },
+  password: {
+    presence: add,
+
+    length: {
+      minimum: 4,
+    },
+  },
+});
+
+validator.signin = (add = true) => ({
+  email: {
+    presence: add,
+
+    email: true,
+  },
+  password: {
+    presence: add,
+
+    length: {
+      minimum: 4,
+    },
+  },
+  name: {
+    presence: add,
+    type: "string",
+  },
+});
+
 module.exports = validator;
